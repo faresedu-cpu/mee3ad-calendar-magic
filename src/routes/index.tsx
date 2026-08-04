@@ -390,7 +390,7 @@ function Index() {
 
           <section className="rounded-3xl border border-border bg-card p-4 shadow-soft sm:p-6">
             {/* Sticky calendar header */}
-            <div className="sticky top-0 z-20 -mx-4 mb-4 border-b border-border bg-card px-4 pb-3 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+            <div className="sticky top-16 z-20 -mx-4 mb-4 border-b border-border bg-card px-4 pb-3 sm:static sm:top-0 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
               <div className="flex items-center justify-between gap-3">
                 <h2 className="min-w-0 truncate font-display text-lg font-semibold text-foreground sm:text-xl">
                   {MONTHS[month]} {year}
