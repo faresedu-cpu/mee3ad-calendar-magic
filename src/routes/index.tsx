@@ -65,6 +65,9 @@ function Index() {
   const [title, setTitle] = useState("");
   const [time, setTime] = useState("09:00");
   const [notify, setNotify] = useState(true);
+  const [remind, setRemind] = useState(10);
+  const [permission, setPermission] = useState<NotificationPermission | "unsupported">("default");
+
 
   useEffect(() => {
     try {
