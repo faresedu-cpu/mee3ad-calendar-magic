@@ -402,8 +402,14 @@ function Index() {
                   <div className="min-w-0">
                     <p className="truncate text-sm font-medium text-foreground">{ev.title}</p>
                     <p className="text-xs text-muted-foreground">
-                      {ev.time} {ev.notify ? "• تنبيه مفعّل" : ""}
+                      {ev.time}
+                      {ev.notify
+                        ? (ev.remind ?? 10) > 0
+                          ? ` • تذكير قبل ${ev.remind ?? 10} دقيقة`
+                          : " • تذكير في الوقت"
+                        : ""}
                     </p>
+
                   </div>
                   <button
                     onClick={() => remove(ev.id)}
