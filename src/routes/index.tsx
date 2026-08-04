@@ -83,6 +83,71 @@ function Index() {
     if (loaded) localStorage.setItem(STORAGE_KEY, JSON.stringify(events));
   }, [events, loaded]);
 
+  // حالة إذن التنبيهات
+  useEffect(() => {
+    if (typeof Notification === "undefined") setPermission("unsupported");
+    else setPermission(Notification.permission);
+  }, []);
+
+  const askPermission = async () => {
+    if (typeof Notification === "undefined") return setPermission("unsupported");
+    try {
+      setPermission(await Notification.requestPermission());
+    } catch {
+      /* ignore */
+    }
+  };
+
+  // جدولة التذكيرات قبل موعد كل فعالية مفعّلة التنبيه
+  useEffect(() => {
+    if (!loaded || typeof Notification === "undefined" || permission !== "granted") return;
+
+    let fired: string[] = [];
+    try {
+      fired = JSON.parse(localStorage.getItem(FIRED_KEY) ?? "[]");
+    } catch {
+      /* ignore */
+    }
+
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    const now = Date.now();
+
+    const fire = (ev: EventItem, minutes: number) => {
+      try {
+        new Notification("مِيعاد", {
+          body:
+            minutes > 0
+              ? `${ev.title} بعد ${minutes} دقيقة (${ev.time})`
+              : `${ev.title} الآن (${ev.time})`,
+          tag: ev.id,
+        });
+      } catch {
+        /* ignore */
+      }
+      fired.push(ev.id);
+      try {
+        localStorage.setItem(FIRED_KEY, JSON.stringify(fired.slice(-200)));
+      } catch {
+        /* ignore */
+      }
+    };
+
+    for (const ev of events) {
+      if (!ev.notify || fired.includes(ev.id)) continue;
+      const [h, m] = ev.time.split(":").map(Number);
+      const [yy, mm, dd] = ev.date.split("-").map(Number);
+      const at = new Date(yy!, mm! - 1, dd!, h ?? 0, m ?? 0).getTime();
+      const minutes = ev.remind ?? 10;
+      const delay = at - minutes * 60_000 - now;
+      if (delay < -60_000) continue; // فات وقته
+      if (delay > 24 * 3600_000) continue; // بعيد، سيُجدول لاحقاً
+      timers.push(setTimeout(() => fire(ev, minutes), Math.max(delay, 0)));
+    }
+
+    return () => timers.forEach(clearTimeout);
+  }, [events, loaded, permission]);
+
+
   const byDate = useMemo(() => {
     const map: Record<string, EventItem[]> = {};
     for (const e of events) (map[e.date] ??= []).push(e);
