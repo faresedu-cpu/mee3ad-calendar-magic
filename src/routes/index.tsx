@@ -345,6 +345,43 @@ function Index() {
                 />
                 تفعيل التنبيهات
               </label>
+              {notify && (
+                <div>
+                  <label className="mb-1 block text-sm text-muted-foreground" htmlFor="remind">
+                    التذكير قبل الموعد
+                  </label>
+                  <select
+                    id="remind"
+                    value={remind}
+                    onChange={(e) => setRemind(Number(e.target.value))}
+                    className="w-full rounded-xl border border-input bg-background px-3 py-2 text-foreground outline-none focus:border-primary"
+                  >
+                    {REMIND_OPTIONS.map((m) => (
+                      <option key={m} value={m}>
+                        {m === 0 ? "في وقت الموعد" : `قبل ${m} دقيقة`}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+              {notify && permission !== "granted" && (
+                <div className="rounded-xl border border-border bg-secondary/50 px-3 py-2 text-xs text-muted-foreground">
+                  {permission === "unsupported" ? (
+                    "متصفحك لا يدعم تنبيهات الويب."
+                  ) : permission === "denied" ? (
+                    "التنبيهات محظورة في إعدادات المتصفح لهذا الموقع."
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={askPermission}
+                      className="font-medium text-primary underline"
+                    >
+                      السماح بالتنبيهات في المتصفح
+                    </button>
+                  )}
+                </div>
+              )}
+
               <button
                 type="submit"
                 className="w-full rounded-xl bg-primary px-4 py-2.5 font-medium text-primary-foreground transition-opacity hover:opacity-90"
