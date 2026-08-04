@@ -215,12 +215,15 @@ function Index() {
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.changedTouches[0].screenX;
+    const touch = e.changedTouches[0];
+    if (touch) touchStartX.current = touch.screenX;
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
     if (touchStartX.current == null) return;
-    const endX = e.changedTouches[0].screenX;
+    const touch = e.changedTouches[0];
+    if (!touch) return;
+    const endX = touch.screenX;
     const delta = endX - touchStartX.current;
     if (delta < -50) shift(1);
     else if (delta > 50) shift(-1);
