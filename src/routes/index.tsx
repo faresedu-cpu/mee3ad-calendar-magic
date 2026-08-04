@@ -13,7 +13,7 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "مِيعاد | تقويم ذكي لإدارة مواعيدك" },
       {
         property: "og:description",
-        content: "أضف مواعيدك وأحداثك بسهولة على تقويم شهري عربي أنيق مع تنبيهات وحفظ تلقائي.",
+        content: "مِيعاد تطبيق تقويم ذكي بالعربية لإضافة المواعيد والأحداث وتفعيل التنبيهات وحفظها تلقائياً في متصفحك.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
