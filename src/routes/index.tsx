@@ -28,9 +28,13 @@ type EventItem = {
   title: string;
   time: string;
   notify: boolean;
+  remind?: number; // دقائق قبل الموعد
 };
 
 const STORAGE_KEY = "mee3ad-events";
+const FIRED_KEY = "mee3ad-fired";
+const REMIND_OPTIONS = [0, 5, 10, 15, 30, 60, 120];
+
 
 const MONTHS = [
   "يناير",
