@@ -173,6 +173,7 @@ function Index() {
     setTitle("");
     setTime("09:00");
     setNotify(true);
+    setRemind(10);
   };
 
   const addEvent = (e: React.FormEvent) => {
@@ -180,12 +181,11 @@ function Index() {
     if (!selected || !title.trim()) return;
     setEvents((prev) => [
       ...prev,
-      { id: crypto.randomUUID(), date: selected, title: title.trim(), time, notify },
+      { id: crypto.randomUUID(), date: selected, title: title.trim(), time, notify, remind },
     ]);
-    if (notify && typeof Notification !== "undefined" && Notification.permission === "default") {
-      Notification.requestPermission().catch(() => {});
-    }
+    if (notify && permission !== "granted") void askPermission();
     setTitle("");
+
   };
 
   const remove = (id: string) => setEvents((prev) => prev.filter((e) => e.id !== id));
