@@ -79,7 +79,7 @@ function Index() {
   const byDate = useMemo(() => {
     const map: Record<string, EventItem[]> = {};
     for (const e of events) (map[e.date] ??= []).push(e);
-    for (const k of Object.keys(map)) map[k].sort((a, b) => a.time.localeCompare(b.time));
+    for (const k of Object.keys(map)) map[k]!.sort((a, b) => a.time.localeCompare(b.time));
     return map;
   }, [events]);
 
