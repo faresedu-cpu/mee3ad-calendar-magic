@@ -28,9 +28,13 @@ type EventItem = {
   title: string;
   time: string;
   notify: boolean;
+  remind?: number; // دقائق قبل الموعد
 };
 
 const STORAGE_KEY = "mee3ad-events";
+const FIRED_KEY = "mee3ad-fired";
+const REMIND_OPTIONS = [0, 5, 10, 15, 30, 60, 120];
+
 
 const MONTHS = [
   "يناير",
@@ -61,6 +65,9 @@ function Index() {
   const [title, setTitle] = useState("");
   const [time, setTime] = useState("09:00");
   const [notify, setNotify] = useState(true);
+  const [remind, setRemind] = useState(10);
+  const [permission, setPermission] = useState<NotificationPermission | "unsupported">("default");
+
 
   useEffect(() => {
     try {
@@ -75,6 +82,71 @@ function Index() {
   useEffect(() => {
     if (loaded) localStorage.setItem(STORAGE_KEY, JSON.stringify(events));
   }, [events, loaded]);
+
+  // حالة إذن التنبيهات
+  useEffect(() => {
+    if (typeof Notification === "undefined") setPermission("unsupported");
+    else setPermission(Notification.permission);
+  }, []);
+
+  const askPermission = async () => {
+    if (typeof Notification === "undefined") return setPermission("unsupported");
+    try {
+      setPermission(await Notification.requestPermission());
+    } catch {
+      /* ignore */
+    }
+  };
+
+  // جدولة التذكيرات قبل موعد كل فعالية مفعّلة التنبيه
+  useEffect(() => {
+    if (!loaded || typeof Notification === "undefined" || permission !== "granted") return;
+
+    let fired: string[] = [];
+    try {
+      fired = JSON.parse(localStorage.getItem(FIRED_KEY) ?? "[]");
+    } catch {
+      /* ignore */
+    }
+
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    const now = Date.now();
+
+    const fire = (ev: EventItem, minutes: number) => {
+      try {
+        new Notification("مِيعاد", {
+          body:
+            minutes > 0
+              ? `${ev.title} بعد ${minutes} دقيقة (${ev.time})`
+              : `${ev.title} الآن (${ev.time})`,
+          tag: ev.id,
+        });
+      } catch {
+        /* ignore */
+      }
+      fired.push(ev.id);
+      try {
+        localStorage.setItem(FIRED_KEY, JSON.stringify(fired.slice(-200)));
+      } catch {
+        /* ignore */
+      }
+    };
+
+    for (const ev of events) {
+      if (!ev.notify || fired.includes(ev.id)) continue;
+      const [h, m] = ev.time.split(":").map(Number);
+      const [yy, mm, dd] = ev.date.split("-").map(Number);
+      const at = new Date(yy!, mm! - 1, dd!, h ?? 0, m ?? 0).getTime();
+      const minutes = ev.remind ?? 10;
+      const delay = at - minutes * 60_000 - now;
+      if (delay < -60_000) continue; // فات وقته
+      if (delay > 24 * 3600_000) continue; // بعيد، سيُجدول لاحقاً
+      timers.push(setTimeout(() => fire(ev, minutes), Math.max(delay, 0)));
+    }
+
+    return () => timers.forEach(clearTimeout);
+  }, [events, loaded, permission]);
+
 
   const byDate = useMemo(() => {
     const map: Record<string, EventItem[]> = {};
@@ -101,6 +173,7 @@ function Index() {
     setTitle("");
     setTime("09:00");
     setNotify(true);
+    setRemind(10);
   };
 
   const addEvent = (e: React.FormEvent) => {
@@ -108,12 +181,11 @@ function Index() {
     if (!selected || !title.trim()) return;
     setEvents((prev) => [
       ...prev,
-      { id: crypto.randomUUID(), date: selected, title: title.trim(), time, notify },
+      { id: crypto.randomUUID(), date: selected, title: title.trim(), time, notify, remind },
     ]);
-    if (notify && typeof Notification !== "undefined" && Notification.permission === "default") {
-      Notification.requestPermission().catch(() => {});
-    }
+    if (notify && permission !== "granted") void askPermission();
     setTitle("");
+
   };
 
   const remove = (id: string) => setEvents((prev) => prev.filter((e) => e.id !== id));
@@ -273,6 +345,43 @@ function Index() {
                 />
                 تفعيل التنبيهات
               </label>
+              {notify && (
+                <div>
+                  <label className="mb-1 block text-sm text-muted-foreground" htmlFor="remind">
+                    التذكير قبل الموعد
+                  </label>
+                  <select
+                    id="remind"
+                    value={remind}
+                    onChange={(e) => setRemind(Number(e.target.value))}
+                    className="w-full rounded-xl border border-input bg-background px-3 py-2 text-foreground outline-none focus:border-primary"
+                  >
+                    {REMIND_OPTIONS.map((m) => (
+                      <option key={m} value={m}>
+                        {m === 0 ? "في وقت الموعد" : `قبل ${m} دقيقة`}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+              {notify && permission !== "granted" && (
+                <div className="rounded-xl border border-border bg-secondary/50 px-3 py-2 text-xs text-muted-foreground">
+                  {permission === "unsupported" ? (
+                    "متصفحك لا يدعم تنبيهات الويب."
+                  ) : permission === "denied" ? (
+                    "التنبيهات محظورة في إعدادات المتصفح لهذا الموقع."
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={askPermission}
+                      className="font-medium text-primary underline"
+                    >
+                      السماح بالتنبيهات في المتصفح
+                    </button>
+                  )}
+                </div>
+              )}
+
               <button
                 type="submit"
                 className="w-full rounded-xl bg-primary px-4 py-2.5 font-medium text-primary-foreground transition-opacity hover:opacity-90"
@@ -293,8 +402,14 @@ function Index() {
                   <div className="min-w-0">
                     <p className="truncate text-sm font-medium text-foreground">{ev.title}</p>
                     <p className="text-xs text-muted-foreground">
-                      {ev.time} {ev.notify ? "• تنبيه مفعّل" : ""}
+                      {ev.time}
+                      {ev.notify
+                        ? (ev.remind ?? 10) > 0
+                          ? ` • تذكير قبل ${ev.remind ?? 10} دقيقة`
+                          : " • تذكير في الوقت"
+                        : ""}
                     </p>
+
                   </div>
                   <button
                     onClick={() => remove(ev.id)}
