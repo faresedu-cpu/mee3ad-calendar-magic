@@ -155,7 +155,16 @@
   --chart-3: oklch(0.65 0.06 130);
   --chart-4: oklch(0.95 0.05 95);
   --chart-5: oklch(0.55 0.05 130);
+
+  --cat-study: oklch(0.72 0.09 250);
+  --cat-doctor: oklch(0.74 0.08 195);
+  --cat-meeting: oklch(0.70 0.10 285);
+  --cat-medicine: oklch(0.80 0.10 80);
+  --cat-family: oklch(0.72 0.09 150);
+  --cat-social: oklch(0.74 0.09 15);
+  --cat-other: oklch(0.76 0.04 120);
 }
+
 
 @layer base {
   * {
