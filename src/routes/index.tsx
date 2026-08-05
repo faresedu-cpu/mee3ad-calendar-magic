@@ -78,7 +78,7 @@ function formatDateLabel(dateStr: string) {
 
 /* ---------------- reusable design-system pieces ---------------- */
 
-function CategoryBadge({ id, size = "md" }: { id?: CategoryId; size?: "sm" | "md" }) {
+function CategoryBadge({ id, size = "md" }: { id?: CategoryId | undefined; size?: "sm" | "md" }) {
   const cat = getCategory(id);
   const Icon = cat.icon;
   return (
