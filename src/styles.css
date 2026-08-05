@@ -19,9 +19,17 @@
  */
 
 @theme inline {
-  --font-display: "Tajawal", system-ui, sans-serif;
-  --font-body: "Tajawal", system-ui, sans-serif;
+  --font-display: "Cairo", "Tajawal", system-ui, sans-serif;
+  --font-body: "Cairo", "Tajawal", system-ui, sans-serif;
   --shadow-soft: 0 18px 40px -24px oklch(0.45 0.06 130 / 0.35);
+  --color-cat-study: var(--cat-study);
+  --color-cat-doctor: var(--cat-doctor);
+  --color-cat-meeting: var(--cat-meeting);
+  --color-cat-medicine: var(--cat-medicine);
+  --color-cat-family: var(--cat-family);
+  --color-cat-social: var(--cat-social);
+  --color-cat-other: var(--cat-other);
+
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -101,7 +109,16 @@
   --chart-3: oklch(0.55 0.06 140);
   --chart-4: oklch(0.85 0.05 100);
   --chart-5: oklch(0.45 0.05 120);
+
+  --cat-study: oklch(0.58 0.09 250);
+  --cat-doctor: oklch(0.60 0.08 195);
+  --cat-meeting: oklch(0.55 0.10 285);
+  --cat-medicine: oklch(0.68 0.10 80);
+  --cat-family: oklch(0.58 0.09 150);
+  --cat-social: oklch(0.62 0.09 15);
+  --cat-other: oklch(0.60 0.05 120);
 }
+
 
 .dark {
   --background: oklch(0.18 0.02 130);
@@ -138,7 +155,16 @@
   --chart-3: oklch(0.65 0.06 130);
   --chart-4: oklch(0.95 0.05 95);
   --chart-5: oklch(0.55 0.05 130);
+
+  --cat-study: oklch(0.72 0.09 250);
+  --cat-doctor: oklch(0.74 0.08 195);
+  --cat-meeting: oklch(0.70 0.10 285);
+  --cat-medicine: oklch(0.80 0.10 80);
+  --cat-family: oklch(0.72 0.09 150);
+  --cat-social: oklch(0.74 0.09 15);
+  --cat-other: oklch(0.76 0.04 120);
 }
+
 
 @layer base {
   * {
