@@ -1,41 +1,30 @@
-# Mee3ad: My Smart Calendar
+# مشروع تقويم موعدي (Mee3ad)
 
-Create a smart calendar web application named "Mee3ad" using HTML, CSS, and vanilla JavaScript.
+تطبيق ويب لتقويم ذكي تفاعلي يهدف إلى إدارة وإشراك المواعيد والأنشطة اليومية واجهته باللغة العربية، ويعتمد على تقنيات تطوير الويب الأساسية دون الحاجة إلى مكتبات خارجية.
 
-Main Features:
+---
 
-Display a full interactive monthly calendar on the main page.
+## الميزات الأساسية
 
-When a user clicks on any day, open a modal to add a new appointment or event (e.g., Doctor appointment, Meeting).
+* **تقويم شهري تفاعلي:** عرض التقويم الكامل على الصفحة الرئيسية مع التفاعل الفوري عند الضغط على الأيام.
+* **إدارة الفعاليات والمواعيد:** نافذة منبثقة تفاعلية لإضافة الأحداث الجديدة لكل يوم (مثل المواعيد الطبية واجتماعات العمل).
+* **تخصيص البيانات:** نموذج يحتوي على عنوان الحدث، والتحديد الزمني، وخيار تفعيل التنبيهات.
+* **عرض منظم:** إدراج المواعيد داخل الأيام الخاصة بها بشكل واضح ومستقل.
+* **حفظ البيانات التلقائي:** الاعتماد على التخزين المحلي للمتصفح (LocalStorage) لضمان استمرارية البيانات بعد إعادة تحميل الصفحة.
+* **واجهة مستخدم متجاوبة:** تصميم باللغة العربية متوافق مع كافة أحجام الشاشات للأجهزة المكتبية والهواتف المحمولة.
 
-The event form should include: Event Title, Event Time, and a toggle/checkbox for "Enable Notifications".
+---
 
-Display the added events clearly on the corresponding days in the calendar view.
+## التكنولوجيا المستخدمة
 
-Save all event data using browser LocalStorage so it persists upon page reload.
+* **HTML5** - هيكلة الصفحات.
+* **CSS3** - التنسيق والتصميم المتجاوب.
+* **JavaScript (Vanilla JS)** - المنطق البرمجي والتفاعل.
+* **LocalStorage API** - تخزين البيانات الممتد.
 
-Make the user interface modern, clean, and responsive for both desktop and mobile screens.
-make it in arabic
+---
 
-This project was built with [Lovable](https://lovable.dev).
+## معاينة المشروع
 
-**Live app**: https://mee3ad-calendar-magic.lovable.app
-
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/a3ab9c23-251e-42d6-8086-3714f32b3021).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
-```
+يمكن الوصول إلى النسخة التشغيلية من التطبيق عبر الرابط التالي:
+[رابط المعاينة المباشرة لتطبيق موعدي](https://mee3ad-calendar-magic.lovable.app)
