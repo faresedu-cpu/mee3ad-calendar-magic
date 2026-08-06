@@ -75,13 +75,13 @@
 
 :root {
   --radius: 0.875rem;
-  --background: oklch(0.965 0.01 95);
+  --background: oklch(0.985 0.008 85);
   --foreground: oklch(0.28 0.02 100);
-  --card: oklch(0.985 0.008 95);
+  --card: oklch(0.998 0.003 85);
   --card-foreground: oklch(0.28 0.02 100);
   --popover: oklch(0.985 0.008 95);
   --popover-foreground: oklch(0.28 0.02 100);
-  --primary: oklch(0.65 0.07 135);
+  --primary: oklch(0.575 0.045 148);
   --primary-foreground: oklch(0.985 0.008 95);
   --secondary: oklch(0.92 0.02 120);
   --secondary-foreground: oklch(0.32 0.04 120);
