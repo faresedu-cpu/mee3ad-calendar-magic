@@ -7,11 +7,11 @@ export type EventItem = {
   title: string;
   time: string;
   notify: boolean;
-  remind?: number; // دقائق قبل الموعد
-  category?: CategoryId;
-  location?: string;
-  link?: string;
-  done?: boolean;
+  remind?: number | undefined; // دقائق قبل الموعد
+  category?: CategoryId | undefined;
+  location?: string | undefined;
+  link?: string | undefined;
+  done?: boolean | undefined;
 };
 
 export const STORAGE_KEY = "mee3ad-events";
