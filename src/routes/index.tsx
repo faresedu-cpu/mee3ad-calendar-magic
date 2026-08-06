@@ -44,7 +44,7 @@ export const Route = createFileRoute("/")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: Dashboard;
+  component: Dashboard,
 });
 
 const FILTERS: { id: string; label: string; cats: CategoryId[] }[] = [
