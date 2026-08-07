@@ -7,7 +7,8 @@ export type EventItem = {
   title: string;
   time: string;
   notify: boolean;
-  remind?: number | undefined; // دقائق قبل الموعد
+  remind?: number | undefined; // دقائق قبل الموعد (قديم — للتوافق)
+  reminders?: number[] | undefined; // تذكيرات متعددة بالدقائق
   category?: CategoryId | undefined;
   location?: string | undefined;
   link?: string | undefined;
@@ -16,7 +17,33 @@ export type EventItem = {
 
 export const STORAGE_KEY = "mee3ad-events";
 export const FIRED_KEY = "mee3ad-fired";
-export const REMIND_OPTIONS = [0, 5, 10, 15, 30, 60, 120];
+
+export type RemindOption = { minutes: number; label: string; group: "short" | "long" };
+
+export const REMIND_OPTIONS: RemindOption[] = [
+  { minutes: 0, label: "في وقت الموعد", group: "short" },
+  { minutes: 5, label: "قبل 5 دقائق", group: "short" },
+  { minutes: 10, label: "قبل 10 دقائق", group: "short" },
+  { minutes: 15, label: "قبل 15 دقيقة", group: "short" },
+  { minutes: 30, label: "قبل 30 دقيقة", group: "short" },
+  { minutes: 45, label: "قبل 45 دقيقة", group: "short" },
+  { minutes: 60, label: "قبل ساعة", group: "short" },
+  { minutes: 120, label: "قبل ساعتين", group: "short" },
+  { minutes: 180, label: "قبل 3 ساعات", group: "short" },
+  { minutes: 360, label: "قبل 6 ساعات", group: "short" },
+  { minutes: 720, label: "قبل 12 ساعة", group: "short" },
+  { minutes: 1440, label: "قبل يوم", group: "long" },
+  { minutes: 2880, label: "قبل يومين", group: "long" },
+  { minutes: 4320, label: "قبل 3 أيام", group: "long" },
+  { minutes: 10080, label: "قبل أسبوع", group: "long" },
+];
+
+export const remindLabel = (m: number) =>
+  REMIND_OPTIONS.find((o) => o.minutes === m)?.label ?? `قبل ${m} دقيقة`;
+
+export const eventReminders = (ev: EventItem): number[] =>
+  ev.reminders?.length ? ev.reminders : [ev.remind ?? 10];
+
 
 export const MONTHS = [
   "يناير",
