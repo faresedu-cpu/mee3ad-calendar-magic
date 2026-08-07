@@ -5,13 +5,16 @@ import {
   CalendarRange,
   CheckCircle2,
   Flame,
+  Pencil,
   Plus,
   Search,
   Sparkles,
   Users,
   Zap,
 } from "lucide-react";
+import { greetingByHour, useProfile } from "@/lib/profile";
 import { getCategory, type CategoryId } from "@/lib/event-categories";
+
 import {
   DAYS_SHORT,
   MONTHS,
