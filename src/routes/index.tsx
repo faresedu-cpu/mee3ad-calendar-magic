@@ -202,20 +202,48 @@ function Dashboard() {
         <header className="rounded-3xl border border-border bg-card/70 p-4 shadow-soft backdrop-blur-xl">
           <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
             <div className="flex min-w-0 items-center gap-3">
-              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-primary font-display text-lg font-extrabold text-primary-foreground">
-                أ
-              </span>
+              <Link to="/settings" hash="profile" aria-label="الملف الشخصي" className="shrink-0">
+                {profile.avatar ? (
+                  <img
+                    src={profile.avatar}
+                    alt="صورتك الشخصية"
+                    className="h-12 w-12 rounded-2xl object-cover"
+                  />
+                ) : (
+                  <span className="grid h-12 w-12 place-items-center rounded-2xl bg-primary font-display text-lg font-extrabold text-primary-foreground">
+                    {profile.name.trim().charAt(0) || "م"}
+                  </span>
+                )}
+              </Link>
               <div className="min-w-0">
-                <p className="truncate font-display text-lg font-extrabold text-foreground">
-                  {greetingByHour(today.getHours())}، أحمد 👋
-                </p>
+                <button
+                  onClick={() => setEditingName(true)}
+                  className="flex max-w-full items-center gap-1.5 text-right"
+                >
+                  {editingName ? (
+                    <input
+                      autoFocus
+                      value={profile.name}
+                      onChange={(e) => updateProfile({ name: e.target.value })}
+                      onBlur={() => setEditingName(false)}
+                      onKeyDown={(e) => e.key === "Enter" && setEditingName(false)}
+                      className="w-40 rounded-xl border border-input bg-background px-2 py-1 font-display text-base font-extrabold text-foreground outline-none focus:border-primary"
+                    />
+                  ) : (
+                    <>
+                      <span className="truncate font-display text-lg font-extrabold text-foreground">
+                        {greet.text}، {profile.name} {greet.emoji}
+                      </span>
+                      <Pencil size={12} className="shrink-0 text-muted-foreground" />
+                    </>
+                  )}
+                </button>
                 <p className="truncate text-[11px] text-muted-foreground">
-                  {dayEvents.length > 0
-                    ? "يومك مليء بالمحطات الإيجابية! 🚀"
-                    : "يوم هادئ — فرصة ممتازة للتركيز ✨"}
+                  {formatDateLabel(todayKey)}
                 </p>
               </div>
             </div>
+
             <div className="flex shrink-0 items-center gap-2">
               <button
                 onClick={askPermission}
