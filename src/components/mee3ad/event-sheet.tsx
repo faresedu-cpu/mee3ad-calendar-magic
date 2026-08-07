@@ -194,23 +194,40 @@ export function EventSheet({
 
           {notify && (
             <div>
-              <label className="mb-1.5 block text-xs font-semibold text-muted-foreground" htmlFor="remind">
-                التذكير قبل الموعد
+              <label className="mb-1.5 block text-xs font-semibold text-muted-foreground">
+                التذكير قبل الموعد — يمكنك اختيار أكثر من تذكير
               </label>
-              <select
-                id="remind"
-                value={remind}
-                onChange={(e) => setRemind(Number(e.target.value))}
-                className="w-full rounded-2xl border border-input bg-background px-4 py-3 text-sm text-foreground outline-none transition-colors focus:border-primary"
-              >
-                {REMIND_OPTIONS.map((m) => (
-                  <option key={m} value={m}>
-                    {m === 0 ? "في وقت الموعد" : `قبل ${m} دقيقة`}
-                  </option>
-                ))}
-              </select>
+              <div className="max-h-40 overflow-y-auto rounded-2xl border border-input bg-background p-2">
+                <div className="flex flex-wrap gap-1.5">
+                  {REMIND_OPTIONS.map((o) => {
+                    const on = reminders.includes(o.minutes);
+                    return (
+                      <button
+                        key={o.minutes}
+                        type="button"
+                        onClick={() => toggleRemind(o.minutes)}
+                        className={`rounded-full border px-3 py-1.5 text-[11px] font-bold transition-all active:scale-95 ${
+                          on
+                            ? "border-transparent bg-primary text-primary-foreground"
+                            : o.group === "long"
+                              ? "border-border bg-secondary/50 text-muted-foreground hover:bg-accent"
+                              : "border-border bg-background text-muted-foreground hover:bg-accent"
+                        }`}
+                      >
+                        {o.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+              <p className="mt-1.5 text-[11px] text-muted-foreground">
+                {reminders.length
+                  ? `${reminders.length} تذكير مفعّل`
+                  : "لم تختر أي تذكير — سيتم التنبيه في وقت الموعد"}
+              </p>
             </div>
           )}
+
 
           {notify && permission !== "granted" && (
             <div className="flex items-start gap-2 rounded-2xl border border-border bg-secondary/40 px-3 py-2.5 text-xs leading-relaxed text-muted-foreground">
