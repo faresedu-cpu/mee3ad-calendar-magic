@@ -299,6 +299,34 @@ function Dashboard() {
           )}
         </header>
 
+        {/* Motivational status */}
+        <section className="mt-4 rounded-3xl border border-border bg-card/70 p-4 shadow-soft backdrop-blur-xl">
+          <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
+            <div className="min-w-0">
+              <p className="truncate font-display text-sm font-bold text-foreground">
+                حالة إنتاجيتك اليوم
+              </p>
+              <p className="truncate text-[11px] text-muted-foreground">
+                {motivation(todayPct, todayList.length)}
+              </p>
+            </div>
+            <span className="shrink-0 rounded-full bg-primary/12 px-3 py-1.5 font-display text-xs font-extrabold text-primary">
+              {Math.round(todayPct)}%
+            </span>
+          </div>
+          <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-secondary">
+            <div
+              className="h-full rounded-full bg-primary transition-all"
+              style={{ width: `${todayPct}%` }}
+            />
+          </div>
+          <p className="mt-2 text-[11px] text-muted-foreground">
+            {todayDone} من {todayList.length} موعد مكتمل
+          </p>
+        </section>
+
+
+
         {/* Stats */}
         <section className="mt-4">
           <div className="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-1">
