@@ -24,7 +24,10 @@ export function EventSheet({
   const [title, setTitle] = useState("");
   const [time, setTime] = useState("09:00");
   const [notify, setNotify] = useState(true);
-  const [remind, setRemind] = useState(10);
+  const [reminders, setReminders] = useState<number[]>([10]);
+  const toggleRemind = (m: number) =>
+    setReminders((prev) => (prev.includes(m) ? prev.filter((x) => x !== m) : [...prev, m].sort((a, b) => a - b)));
+
   const [category, setCategory] = useState<CategoryId>("other");
   const [location, setLocation] = useState("");
   const [link, setLink] = useState("");
