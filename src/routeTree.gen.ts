@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as CalendarRouteImport } from './routes/calendar'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SocialRouteImport } from './routes/social'
+import { Route as StudyRouteImport } from './routes/study'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -34,18 +35,25 @@ const SocialRoute = SocialRouteImport.update({
   path: '/social',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StudyRoute = StudyRouteImport.update({
+  id: '/study',
+  path: '/study',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/calendar': typeof CalendarRoute
   '/settings': typeof SettingsRoute
   '/social': typeof SocialRoute
+  '/study': typeof StudyRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/calendar': typeof CalendarRoute
   '/settings': typeof SettingsRoute
   '/social': typeof SocialRoute
+  '/study': typeof StudyRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +61,14 @@ export interface FileRoutesById {
   '/calendar': typeof CalendarRoute
   '/settings': typeof SettingsRoute
   '/social': typeof SocialRoute
+  '/study': typeof StudyRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/calendar' | '/settings' | '/social'
+  fullPaths: '/' | '/calendar' | '/settings' | '/social' | '/study'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/calendar' | '/settings' | '/social'
-  id: '__root__' | '/' | '/calendar' | '/settings' | '/social'
+  to: '/' | '/calendar' | '/settings' | '/social' | '/study'
+  id: '__root__' | '/' | '/calendar' | '/settings' | '/social' | '/study'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -67,6 +76,7 @@ export interface RootRouteChildren {
   CalendarRoute: typeof CalendarRoute
   SettingsRoute: typeof SettingsRoute
   SocialRoute: typeof SocialRoute
+  StudyRoute: typeof StudyRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -99,6 +109,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SocialRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/study': {
+      id: '/study'
+      path: '/study'
+      fullPath: '/study'
+      preLoaderRoute: typeof StudyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -107,17 +124,8 @@ const rootRouteChildren: RootRouteChildren = {
   CalendarRoute: CalendarRoute,
   SettingsRoute: SettingsRoute,
   SocialRoute: SocialRoute,
+  StudyRoute: StudyRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
