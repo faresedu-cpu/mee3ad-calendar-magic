@@ -106,12 +106,16 @@ function StatCard({
 
 function Dashboard() {
   const { events, byDate, permission, askPermission, add, remove, toggleDone, snooze } = useEvents();
+  const { profile, updateProfile } = useProfile();
   const today = new Date();
   const todayKey = dateKey(today);
   const [selectedDate, setSelectedDate] = useState(todayKey);
   const [sheetDate, setSheetDate] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState("all");
+  const [editingName, setEditingName] = useState(false);
+  const greet = greetingByHour(today.getHours());
+
 
   const weekStrip = useMemo(() => {
     const start = new Date(today);
