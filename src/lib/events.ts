@@ -133,28 +133,31 @@ export function useEvents() {
         new Notification("مِيعاد", {
           body:
             minutes > 0
-              ? `${ev.title} بعد ${minutes} دقيقة (${ev.time})`
+              ? `${ev.title} — ${remindLabel(minutes)} (${ev.time})`
               : `${ev.title} الآن (${ev.time})`,
-          tag: ev.id,
+          tag: `${ev.id}:${minutes}`,
         });
       } catch {
         /* ignore */
       }
-      fired.push(ev.id);
+      fired.push(`${ev.id}:${minutes}`);
       try {
-        localStorage.setItem(FIRED_KEY, JSON.stringify(fired.slice(-200)));
+        localStorage.setItem(FIRED_KEY, JSON.stringify(fired.slice(-400)));
       } catch {
         /* ignore */
       }
     };
 
     for (const ev of events) {
-      if (!ev.notify || ev.done || fired.includes(ev.id)) continue;
-      const minutes = ev.remind ?? 10;
-      const delay = eventTimestamp(ev) - minutes * 60_000 - now;
-      if (delay < -60_000 || delay > 24 * 3600_000) continue;
-      timers.push(setTimeout(() => fire(ev, minutes), Math.max(delay, 0)));
+      if (!ev.notify || ev.done) continue;
+      for (const minutes of eventReminders(ev)) {
+        if (fired.includes(`${ev.id}:${minutes}`) || fired.includes(ev.id)) continue;
+        const delay = eventTimestamp(ev) - minutes * 60_000 - now;
+        if (delay < -60_000 || delay > 24 * 3600_000) continue;
+        timers.push(setTimeout(() => fire(ev, minutes), Math.max(delay, 0)));
+      }
     }
+
 
     return () => timers.forEach(clearTimeout);
   }, [events, loaded, permission]);
