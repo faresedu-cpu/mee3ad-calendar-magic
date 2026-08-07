@@ -55,12 +55,13 @@ const FILTERS: { id: string; label: string; cats: CategoryId[] }[] = [
   { id: "health", label: "صحة وطبيب", cats: ["doctor", "medicine"] },
 ];
 
-function greetingByHour(h: number) {
-  if (h < 5) return "ليلة هادئة";
-  if (h < 12) return "صباح الخير";
-  if (h < 17) return "نهارك سعيد";
-  return "مساء الخير";
+function motivation(pct: number, count: number) {
+  if (count === 0) return "يوم هادئ — فرصة ممتازة للتركيز على نفسك ✨";
+  if (pct >= 100) return "أنجزت كل مواعيد اليوم! يوم مثالي 🎉";
+  if (pct >= 50) return "أنت في منتصف الطريق، استمر بنفس الحماس 💪";
+  return "ابدأ بأول مهمة اليوم، الخطوة الأولى هي الأهم 🚀";
 }
+
 
 function StatCard({
   icon,
