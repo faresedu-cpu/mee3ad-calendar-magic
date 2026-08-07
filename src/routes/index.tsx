@@ -5,13 +5,16 @@ import {
   CalendarRange,
   CheckCircle2,
   Flame,
+  Pencil,
   Plus,
   Search,
   Sparkles,
   Users,
   Zap,
 } from "lucide-react";
+import { greetingByHour, useProfile } from "@/lib/profile";
 import { getCategory, type CategoryId } from "@/lib/event-categories";
+
 import {
   DAYS_SHORT,
   MONTHS,
@@ -55,12 +58,13 @@ const FILTERS: { id: string; label: string; cats: CategoryId[] }[] = [
   { id: "health", label: "صحة وطبيب", cats: ["doctor", "medicine"] },
 ];
 
-function greetingByHour(h: number) {
-  if (h < 5) return "ليلة هادئة";
-  if (h < 12) return "صباح الخير";
-  if (h < 17) return "نهارك سعيد";
-  return "مساء الخير";
+function motivation(pct: number, count: number) {
+  if (count === 0) return "يوم هادئ — فرصة ممتازة للتركيز على نفسك ✨";
+  if (pct >= 100) return "أنجزت كل مواعيد اليوم! يوم مثالي 🎉";
+  if (pct >= 50) return "أنت في منتصف الطريق، استمر بنفس الحماس 💪";
+  return "ابدأ بأول مهمة اليوم، الخطوة الأولى هي الأهم 🚀";
 }
+
 
 function StatCard({
   icon,
@@ -105,12 +109,20 @@ function StatCard({
 
 function Dashboard() {
   const { events, byDate, permission, askPermission, add, remove, toggleDone, snooze } = useEvents();
+  const { profile, updateProfile } = useProfile();
   const today = new Date();
   const todayKey = dateKey(today);
   const [selectedDate, setSelectedDate] = useState(todayKey);
   const [sheetDate, setSheetDate] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState("all");
+  const [editingName, setEditingName] = useState(false);
+  const greet = greetingByHour(today.getHours());
+  const todayList = byDate[todayKey] ?? [];
+  const todayDone = todayList.filter((e) => e.done).length;
+  const todayPct = todayList.length ? (todayDone / todayList.length) * 100 : 0;
+
+
 
   const weekStrip = useMemo(() => {
     const start = new Date(today);
@@ -201,20 +213,48 @@ function Dashboard() {
         <header className="rounded-3xl border border-border bg-card/70 p-4 shadow-soft backdrop-blur-xl">
           <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
             <div className="flex min-w-0 items-center gap-3">
-              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-primary font-display text-lg font-extrabold text-primary-foreground">
-                أ
-              </span>
+              <Link to="/settings" hash="profile" aria-label="الملف الشخصي" className="shrink-0">
+                {profile.avatar ? (
+                  <img
+                    src={profile.avatar}
+                    alt="صورتك الشخصية"
+                    className="h-12 w-12 rounded-2xl object-cover"
+                  />
+                ) : (
+                  <span className="grid h-12 w-12 place-items-center rounded-2xl bg-primary font-display text-lg font-extrabold text-primary-foreground">
+                    {profile.name.trim().charAt(0) || "م"}
+                  </span>
+                )}
+              </Link>
               <div className="min-w-0">
-                <p className="truncate font-display text-lg font-extrabold text-foreground">
-                  {greetingByHour(today.getHours())}، أحمد 👋
-                </p>
+                <button
+                  onClick={() => setEditingName(true)}
+                  className="flex max-w-full items-center gap-1.5 text-right"
+                >
+                  {editingName ? (
+                    <input
+                      autoFocus
+                      value={profile.name}
+                      onChange={(e) => updateProfile({ name: e.target.value })}
+                      onBlur={() => setEditingName(false)}
+                      onKeyDown={(e) => e.key === "Enter" && setEditingName(false)}
+                      className="w-40 rounded-xl border border-input bg-background px-2 py-1 font-display text-base font-extrabold text-foreground outline-none focus:border-primary"
+                    />
+                  ) : (
+                    <>
+                      <span className="truncate font-display text-lg font-extrabold text-foreground">
+                        {greet.text}، {profile.name} {greet.emoji}
+                      </span>
+                      <Pencil size={12} className="shrink-0 text-muted-foreground" />
+                    </>
+                  )}
+                </button>
                 <p className="truncate text-[11px] text-muted-foreground">
-                  {dayEvents.length > 0
-                    ? "يومك مليء بالمحطات الإيجابية! 🚀"
-                    : "يوم هادئ — فرصة ممتازة للتركيز ✨"}
+                  {formatDateLabel(todayKey)}
                 </p>
               </div>
             </div>
+
             <div className="flex shrink-0 items-center gap-2">
               <button
                 onClick={askPermission}
@@ -262,6 +302,34 @@ function Dashboard() {
             </div>
           )}
         </header>
+
+        {/* Motivational status */}
+        <section className="mt-4 rounded-3xl border border-border bg-card/70 p-4 shadow-soft backdrop-blur-xl">
+          <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
+            <div className="min-w-0">
+              <p className="truncate font-display text-sm font-bold text-foreground">
+                حالة إنتاجيتك اليوم
+              </p>
+              <p className="truncate text-[11px] text-muted-foreground">
+                {motivation(todayPct, todayList.length)}
+              </p>
+            </div>
+            <span className="shrink-0 rounded-full bg-primary/12 px-3 py-1.5 font-display text-xs font-extrabold text-primary">
+              {Math.round(todayPct)}%
+            </span>
+          </div>
+          <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-secondary">
+            <div
+              className="h-full rounded-full bg-primary transition-all"
+              style={{ width: `${todayPct}%` }}
+            />
+          </div>
+          <p className="mt-2 text-[11px] text-muted-foreground">
+            {todayDone} من {todayList.length} موعد مكتمل
+          </p>
+        </section>
+
+
 
         {/* Stats */}
         <section className="mt-4">
