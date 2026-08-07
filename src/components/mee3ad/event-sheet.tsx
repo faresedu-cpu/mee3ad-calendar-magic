@@ -46,7 +46,9 @@ export function EventSheet({
       title: title.trim(),
       time,
       notify,
-      remind,
+      reminders: reminders.length ? reminders : [0],
+      remind: reminders[0] ?? 0,
+
       category,
       location: location.trim() || undefined,
       link: link.trim() || undefined,
