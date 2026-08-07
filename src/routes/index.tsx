@@ -118,6 +118,10 @@ function Dashboard() {
   const [filter, setFilter] = useState("all");
   const [editingName, setEditingName] = useState(false);
   const greet = greetingByHour(today.getHours());
+  const todayList = byDate[todayKey] ?? [];
+  const todayDone = todayList.filter((e) => e.done).length;
+  const todayPct = todayList.length ? (todayDone / todayList.length) * 100 : 0;
+
 
 
   const weekStrip = useMemo(() => {
